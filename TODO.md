@@ -1,0 +1,3 @@
+- Add filters based on what game it is in
+- Add options for icon type
+- Add filters based on classification of monsters
