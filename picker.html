@@ -8,9 +8,13 @@
 <body>
 <h1>Picker</h1>
 
-<p>Usage: select the monsters you like, press pick to comfirm, and repeat to list you top favorites! </p>
+<p>
+    Usage: select the monsters you like, press pick to comfirm,
+    and repeat to list you top favorites!
+</p>
 
-<p>Include the monsters appeared in games/expensions:
+<p>
+    Include the monsters appeared in games/expensions:
     <label><input type="checkbox" name="games_appeared" class="games_appeared" value="world">
         World</label>
     <label><input type="checkbox" name="games_appeared" class="games_appeared" value="iceborne">
@@ -19,6 +23,19 @@
         Rise</label>
     <label><input type="checkbox" name="games_appeared" class="games_appeared" value="sunbreak">
         Sunbreak</label>
+</p>
+
+<p>
+    <div>
+        Icon priority:
+    </div>
+    <div>
+        <ul id="icon_priority_list">
+            <li><label value="rise_sunbreak">Rise/Sunbreak</label></li>
+            <li><label value="world_iceborne">World/Iceborne</label></li>
+            <li><label value="official_render">Official render</label></li>
+        </ul>
+    </div>
 </p>
 
 <div id="container">
@@ -54,6 +71,7 @@ var myPicker = new picker.Picker({
     localStorageKey: 'picker-state',
     defaultSettings: {
         games_appeared: ['world', 'iceborne', 'rise', 'sunbreak'],
+        games_appeared: ['rise_sunbreak', 'world_iceborne', 'official_render'],
     },
     shouldIncludeItem: function(item, settings) {
         var is_in_games_appeared = false;
@@ -93,14 +111,22 @@ var pickerUI = new PickerUI(myPicker, {
         if(monsters_in_game['iceborne'].indexOf(item.id) !== -1){
             return 'image/world_iceborne/' + item.image;
         }
-        return 'image/official_thumbnail/' + item.image;
+        return 'image/official_render/' + item.image;
     }
 });
 
 pickerUI.initialize();
 
+/* Sortable icon priority list */
+var icon_priority_list = document.getElementById('icon_priority_list');
+var sortable_icon_priority = new Sortable(icon_priority_list, {
+    onUpdate: function(event){
+        picker.
+    }
+});
+
 /* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
-var sortable = new Sortable(pickerUI.elem.favorites.get(0), {
+var sortable_favorite = new Sortable(pickerUI.elem.favorites.get(0), {
     draggable: '.item',
     animation: 100,
     onStart: function() {
