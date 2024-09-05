@@ -229,13 +229,12 @@ button.disabled:hover {
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="picker.js"></script>
 <script src="picker-ui.js"></script>
+<script src="items-data.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
 <script>
 'use strict';
 
-var items = [
-    // Define your items here
-];
+var items = items_all;
 
 var myPicker = new picker.Picker({
     items: items
