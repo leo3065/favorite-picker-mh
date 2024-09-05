@@ -79,6 +79,9 @@ var pickerUI = new PickerUI(myPicker, {
         settings: {
             games_appeared: '.games_appeared',
         }
+    },
+    getItemImageUrl: function(item, settings) {
+        return 'image/official_thumbnail/' + item.image;
     }
 });
 
