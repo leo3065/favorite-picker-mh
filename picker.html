@@ -81,6 +81,18 @@ var pickerUI = new PickerUI(myPicker, {
         }
     },
     getItemImageUrl: function(item, settings) {
+        if(monsters_in_game['rise'].indexOf(item.id) !== -1){
+            return 'image/rise_sunbreak/' + item.image;
+        }
+        if(monsters_in_game['sunbreak'].indexOf(item.id) !== -1){
+            return 'image/rise_sunbreak/' + item.image;
+        }
+        if(monsters_in_game['world'].indexOf(item.id) !== -1){
+            return 'image/world_iceborne/' + item.image;
+        }
+        if(monsters_in_game['iceborne'].indexOf(item.id) !== -1){
+            return 'image/world_iceborne/' + item.image;
+        }
         return 'image/official_thumbnail/' + item.image;
     }
 });
