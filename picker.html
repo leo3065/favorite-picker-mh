@@ -71,12 +71,10 @@ var myPicker = new picker.Picker({
     localStorageKey: 'picker-state',
     defaultSettings: {
         games_appeared: ['world', 'iceborne', 'rise', 'sunbreak'],
-        games_appeared: ['rise_sunbreak', 'world_iceborne', 'official_render'],
     },
     shouldIncludeItem: function(item, settings) {
-        var is_in_games_appeared = false;
-        for(const i in settings.games_appeared){
-            var game = settings.games_appeared[i]
+        let is_in_games_appeared = false;
+        for(let game of settings.games_appeared){
             if(monsters_in_game[game].indexOf(item.id) !== -1){
                 is_in_games_appeared = true;
                 break;
@@ -99,19 +97,38 @@ var pickerUI = new PickerUI(myPicker, {
         }
     },
     getItemImageUrl: function(item, settings) {
-        if(monsters_in_game['rise'].indexOf(item.id) !== -1){
-            return 'image/rise_sunbreak/' + item.image;
+        let itemHandlers = {
+            rise_sunbreak: function(item){
+                if(monsters_in_game['rise'].indexOf(item.id) !== -1){
+                    return 'image/rise_sunbreak/' + item.image;
+                }
+                if(monsters_in_game['sunbreak'].indexOf(item.id) !== -1){
+                    return 'image/rise_sunbreak/' + item.image;
+                }
+                return null;
+            },
+            world_iceborne: function(item){
+                if(monsters_in_game['world'].indexOf(item.id) !== -1){
+                    return 'image/world_iceborne/' + item.image;
+                }
+                if(monsters_in_game['iceborne'].indexOf(item.id) !== -1){
+                    return 'image/world_iceborne/' + item.image;
+                }
+                return null;
+            },
+            official_render: function(item){
+                return 'image/official_render/' + item.image;
+            },
+        };
+
+        let icon_priority = ['world_iceborne', 'rise_sunbreak', 'official_render'];
+        for(let sel of icon_priority){
+            let url = itemHandlers[sel](item);
+            if(url){
+                return url;
+            }
         }
-        if(monsters_in_game['sunbreak'].indexOf(item.id) !== -1){
-            return 'image/rise_sunbreak/' + item.image;
-        }
-        if(monsters_in_game['world'].indexOf(item.id) !== -1){
-            return 'image/world_iceborne/' + item.image;
-        }
-        if(monsters_in_game['iceborne'].indexOf(item.id) !== -1){
-            return 'image/world_iceborne/' + item.image;
-        }
-        return 'image/official_render/' + item.image;
+        return itemHandlers.official_render(item);
     }
 });
 
@@ -121,7 +138,9 @@ pickerUI.initialize();
 var icon_priority_list = document.getElementById('icon_priority_list');
 var sortable_icon_priority = new Sortable(icon_priority_list, {
     onUpdate: function(event){
-        picker.
+        let labels = Array.from(event.to.getElementsByTagName('label'));
+        let icon_priority = labels.map(e => e.getAttribute('value'));
+        // console.log(icon_priority);
     }
 });
 
