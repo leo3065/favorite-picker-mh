@@ -8,7 +8,16 @@
 <body>
 <h1>Picker</h1>
 
-<p>You can include any content you want here.</p>
+<p>Include the monsters appeared in games/expensions:
+    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="world">
+        World</label>
+    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="iceborne">
+        Iceborne</label>
+    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="rise">
+        Rise</label>
+    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="sunbreak">
+        Sunbreak</label>
+</p>
 
 <div id="container">
 
@@ -16,7 +25,9 @@
 <ul id="evaluating" class="item-list">
 </ul>
 
-<p id="buttons"><button id="pick">Pick</button> <button id="pass">Pass</button> <button id="undo">Undo</button> <button id="redo">Redo</button></p>
+<p id="buttons">
+    <button id="pick">Pick</button> <button id="pass">Pass</button>
+    <button id="undo">Undo</button> <button id="redo">Redo</button></p>
 </div>
 
 <div id="secondary">
@@ -37,7 +48,22 @@
 var items = items_all;
 
 var myPicker = new picker.Picker({
-    items: items
+    items: items,
+    localStorageKey: 'picker-state',
+    defaultSettings: {
+        games_appeared: ['world', 'iceborne', 'rise', 'sunbreak'],
+    },
+    shouldIncludeItem: function(item, settings) {
+        var is_in_games_appeared = false;
+        for(const i in settings.games_appeared){
+            var game = settings.games_appeared[i]
+            if(monsters_in_game[game].indexOf(item.id) !== -1){
+                is_in_games_appeared = true;
+                break;
+            }
+        }
+        return is_in_games_appeared;
+    }
 });
 
 var pickerUI = new PickerUI(myPicker, {
@@ -47,7 +73,10 @@ var pickerUI = new PickerUI(myPicker, {
         undo: "#undo",
         redo: "#redo",
         evaluating: "#evaluating",
-        favorites: "#favorites"
+        favorites: "#favorites",
+        settings: {
+            games_appeared: '.games_appeared',
+        }
     }
 });
 
