@@ -55,8 +55,32 @@ button.disabled:hover {
     overflow: hidden;
 }
 
-@media (min-width:1024px) {
+.settings-container {
+    display: flex;
+}
 
+.settings-child {
+    margin-right: 5px;
+}
+
+#icon_priority_list{
+    border: 2px solid #00F;
+    width: fit-content;
+    padding: 0px 3px;
+    margin: 3px 0px;
+    border-radius: 8px;
+}
+
+#icon_priority_list div{
+    margin: 5px 0px;
+}
+
+#icon_priority_list label{
+    border: 2px solid #7DD;
+    border-radius: 5px;
+}
+
+@media (min-width:1024px) {
     /* Put the found favorites beside the picking div when the window is sufficiently large */
     #picking {
         float: left;
@@ -69,7 +93,6 @@ button.disabled:hover {
 }
 
 @media (min-width:1300px) {
-
     /* Once we get to the point where 636px is less than half of the width of the screen, make the picking div just take up half */
     #picking {
         width: 50%;
@@ -87,7 +110,7 @@ button.disabled:hover {
     font-weight: bold;
     width: 6em;
     border-radius: 5px;
-    margin-right: 10px;
+    margin: 0px 10px;
 }
 
 #pick.disabled {
@@ -96,6 +119,20 @@ button.disabled:hover {
 
 #pick:hover {
     background: #ACF;
+}
+
+#reset {
+    background: #C00;
+    color: #FFF;
+    font-size: larger;
+    font-weight: bold;
+    width: 6em;
+    border-radius: 5px;
+    margin: 0px 10px;
+}
+
+#reset:hover {
+    background: #F00;
 }
 
 .item-list {

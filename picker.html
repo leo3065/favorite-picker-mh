@@ -13,49 +13,51 @@
     and repeat to list you top favorites!
 </p>
 
-<p>
-    Include the monsters appeared in games/expensions:
-    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="world">
-        World</label>
-    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="iceborne">
-        Iceborne</label>
-    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="rise">
-        Rise</label>
-    <label><input type="checkbox" name="games_appeared" class="games_appeared" value="sunbreak">
-        Sunbreak</label>
-</p>
+<div>
+    <div class="settings-container">
+        <div class="settings-child">Include the monsters appeared in games/expensions:</div>
+        <div class="settings-child">
+            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="world">
+                World</label><br>
+            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="iceborne">
+                Iceborne</label><br>
+            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="rise">
+                Rise</label><br>
+            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="sunbreak">
+                Sunbreak</label><br>
+        </div>
+    </div>
 
-<p>
-    <div>
-        Icon priority:
+    <div class="settings-container">
+        <div class="settings-child">Icon priority (drag to reorder):</div>
+        <div class="settings-child" id="icon_priority_list">
+            <div><label value="rise_sunbreak">Rise/Sunbreak</label></div>
+            <div><label value="world_iceborne">World/Iceborne</label></div>
+            <div><label value="official_render">Official render</label></div>
+        </div>
     </div>
-    <div>
-        <ul id="icon_priority_list">
-            <li><label value="rise_sunbreak">Rise/Sunbreak</label></li>
-            <li><label value="world_iceborne">World/Iceborne</label></li>
-            <li><label value="official_render">Official render</label></li>
-        </ul>
-    </div>
-</p>
+</div>
 
 <div id="container">
+    <div id="picking">
+        <ul id="evaluating" class="item-list">
+        </ul>
 
-<div id="picking">
-<ul id="evaluating" class="item-list">
-</ul>
+        <p id="buttons">
+            <button id="pick">Pick</button> <button id="pass">Pass</button>
+            <button id="undo">Undo</button> <button id="redo">Redo</button>
+            <button id="reset">Reset</button>
+        </p>
+    </div>
 
-<p id="buttons">
-    <button id="pick">Pick</button> <button id="pass">Pass</button>
-    <button id="undo">Undo</button> <button id="redo">Redo</button></p>
+    <div id="secondary">
+        <h2>Found favorites</h2>
+
+        <ol id="favorites" class="item-list">
+        </ol>
+    </div>
 </div>
 
-<div id="secondary">
-<h2>Found favorites</h2>
-
-<ol id="favorites" class="item-list">
-</ol>
-</div>
-</div>
 <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
 <script src="picker.js"></script>
 <script src="picker-ui.js"></script>
@@ -70,6 +72,7 @@ var myPicker = new picker.Picker({
     items: items,
     localStorageKey: 'picker-state',
     defaultSettings: {
+        maxBatchSize: 10,
         games_appeared: ['world', 'iceborne', 'rise', 'sunbreak'],
     },
     shouldIncludeItem: function(item, settings) {
@@ -90,6 +93,7 @@ var pickerUI = new PickerUI(myPicker, {
         pass: "#pass",
         undo: "#undo",
         redo: "#redo",
+        reset: "#reset",
         evaluating: "#evaluating",
         favorites: "#favorites",
         settings: {
@@ -121,7 +125,6 @@ var pickerUI = new PickerUI(myPicker, {
             },
         };
 
-        let icon_priority = ['world_iceborne', 'rise_sunbreak', 'official_render'];
         for(let sel of icon_priority){
             let url = itemHandlers[sel](item);
             if(url){
@@ -135,12 +138,13 @@ var pickerUI = new PickerUI(myPicker, {
 pickerUI.initialize();
 
 /* Sortable icon priority list */
+var icon_priority = ['world_iceborne', 'rise_sunbreak', 'official_render'];
 var icon_priority_list = document.getElementById('icon_priority_list');
 var sortable_icon_priority = new Sortable(icon_priority_list, {
     onUpdate: function(event){
         let labels = Array.from(event.to.getElementsByTagName('label'));
-        let icon_priority = labels.map(e => e.getAttribute('value'));
-        // console.log(icon_priority);
+        icon_priority = labels.map(e => e.getAttribute('value'));
+        pickerUI.update();
     }
 });
 
@@ -158,7 +162,7 @@ var sortable_favorite = new Sortable(pickerUI.elem.favorites.get(0), {
         myPicker.setFavorites(pickerUI.elem.favorites.children().map(function() {
             return pickerUI.getItem(this);
         }).get());
-        pickerUI.update(true);
+        pickerUI.update();
     }
 });
 /* End sortable favorites */

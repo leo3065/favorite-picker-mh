@@ -1,3 +1,3 @@
-- Add filters based on what game it is in
-- Add options for icon type
+- Complete game sets
+- Complete icon sets
 - Add filters based on classification of monsters
