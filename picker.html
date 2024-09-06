@@ -138,7 +138,7 @@ var pickerUI = new PickerUI(myPicker, {
 pickerUI.initialize();
 
 /* Sortable icon priority list */
-var icon_priority = ['world_iceborne', 'rise_sunbreak', 'official_render'];
+var icon_priority = [];
 var icon_priority_list = document.getElementById('icon_priority_list');
 var sortable_icon_priority = new Sortable(icon_priority_list, {
     onUpdate: function(event){
@@ -147,6 +147,12 @@ var sortable_icon_priority = new Sortable(icon_priority_list, {
         pickerUI.update();
     }
 });
+
+{
+    let labels = Array.from(icon_priority_list.getElementsByTagName('label'));
+    icon_priority = labels.map(e => e.getAttribute('value'));
+    pickerUI.update();
+}
 
 /* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
 var sortable_favorite = new Sortable(pickerUI.elem.favorites.get(0), {
