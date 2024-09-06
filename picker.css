@@ -57,6 +57,9 @@ button.disabled:hover {
 
 .settings-container {
     display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .settings-child {
@@ -153,7 +156,7 @@ button.disabled:hover {
     vertical-align: top;
     overflow: hidden;
     border-radius: 10px;
-    background: #EFF;
+    background: #EEE;
     color: #000;
     margin: 1px;
 }
