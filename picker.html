@@ -21,14 +21,12 @@
     <div class="settings-container">
         <div class="settings-child">Include the monsters appeared in games/expensions:</div>
         <div class="settings-child">
-            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="world">
-                World</label><br>
-            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="iceborne">
-                Iceborne</label><br>
-            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="rise">
-                Rise</label><br>
-            <label><input type="checkbox" name="games_appeared" class="games_appeared" value="sunbreak">
-                Sunbreak</label><br>
+            <label><input 
+                type="checkbox" name="games_appeared" class="games_appeared" value="world_iceborne">
+                World / Iceborne</label><br>
+            <label><input 
+                type="checkbox" name="games_appeared" class="games_appeared" value="rise_sunbreak">
+                Rise / Sunbreak</label><br>
         </div>
     </div>
 
@@ -77,12 +75,12 @@ var myPicker = new picker.Picker({
     localStorageKey: 'picker-state',
     defaultSettings: {
         maxBatchSize: 10,
-        games_appeared: ['world', 'iceborne', 'rise', 'sunbreak'],
+        games_appeared: ['world_iceborne', 'rise_sunbreak'],
     },
     shouldIncludeItem: function(item, settings) {
         let is_in_games_appeared = false;
         for(let game of settings.games_appeared){
-            if(monsters_in_game[game].indexOf(item.id) !== -1){
+            if(item.games.indexOf(game) !== -1){
                 is_in_games_appeared = true;
                 break;
             }
@@ -107,19 +105,13 @@ var pickerUI = new PickerUI(myPicker, {
     getItemImageUrl: function(item, settings) {
         let itemHandlers = {
             rise_sunbreak: function(item){
-                if(monsters_in_game['rise'].indexOf(item.id) !== -1){
-                    return 'image/rise_sunbreak/' + item.image;
-                }
-                if(monsters_in_game['sunbreak'].indexOf(item.id) !== -1){
+                if(item.games.indexOf('rise_sunbreak') !== -1){
                     return 'image/rise_sunbreak/' + item.image;
                 }
                 return null;
             },
             world_iceborne: function(item){
-                if(monsters_in_game['world'].indexOf(item.id) !== -1){
-                    return 'image/world_iceborne/' + item.image;
-                }
-                if(monsters_in_game['iceborne'].indexOf(item.id) !== -1){
+                if(item.games.indexOf('world_iceborne') !== -1){
                     return 'image/world_iceborne/' + item.image;
                 }
                 return null;
