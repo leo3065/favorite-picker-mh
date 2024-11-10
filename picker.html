@@ -1,96 +1,148 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta name="viewport" content="initial-scale=1.0">
-<link rel="stylesheet" href="picker.css">
-<title>Favorite Monster Picker</title>
+  <meta name="viewport" content="initial-scale=1.0">
+  <link rel="stylesheet" href="picker.css">
+  <title>Favorite Monster Picker</title>
 </head>
+
 <body>
-<h1>Favorite Monster Picker</h1>
+  <h1>Favorite Monster Picker</h1>
 
-<p>
+  <p>
     How to use:
-    <ol>
-        <li>Pick any number of monsters you like</li>
-        <li>Click "pick" to comfirm the pick of this round</li>
-        <li>Repeat to list your top favorites</li>
-    </ol>
-</p>
+  <ol>
+    <li>Pick any number of monsters you like</li>
+    <li>Click "pick" to comfirm the pick of this round</li>
+    <li>Repeat to list your top favorites</li>
+  </ol>
+  </p>
 
-<div>
+  <div>
     <div class="settings-container">
-        <div class="settings-child">Include the monsters appeared in games/expensions:</div>
-        <div class="settings-child">
-            <label><input 
-                type="checkbox" name="games_appeared" class="games_appeared" value="world_iceborne">
-                World / Iceborne</label><br>
-            <label><input 
-                type="checkbox" name="games_appeared" class="games_appeared" value="rise_sunbreak">
-                Rise / Sunbreak</label><br>
-        </div>
+      <div class="settings-child">Include the monsters appeared in games/expensions:</div>
+      <div class="settings-child">
+        <label>
+           <!-- <input type="checkbox" name="games_appeared" class="games_appeared" value="any">
+          Any</label><br> -->
+        <label>
+          <input type="checkbox" name="games_appeared" class="games_appeared" value="world_iceborne">
+          World / Iceborne</label><br>
+        <label>
+          <input type="checkbox" name="games_appeared" class="games_appeared" value="rise_sunbreak">
+          Rise / Sunbreak</label><br>
+      </div>
+    </div>
+    
+    <div class="settings-container">
+      <div class="settings-child">Include subspecies:</div>
+      <div class="settings-child">
+        <label>
+          <input type="radio" name="subspecies" class="subspecies" value="all">
+          All</label><br>
+        <label>
+          <input type="radio" name="subspecies" class="subspecies" value="soft">
+          Only if the base species is not in the the selected game(s)</label><br>
+        <label>
+          <input type="radio" name="subspecies" class="subspecies" value="none">
+          None</label><br>
+      </div>
     </div>
 
     <div class="settings-container">
-        <div class="settings-child">Icon priority (drag to reorder):</div>
-        <div class="settings-child" id="icon_priority_list">
-            <div><label value="rise_sunbreak">Rise/Sunbreak</label></div>
-            <div><label value="world_iceborne">World/Iceborne</label></div>
-            <div><label value="official_render">Official render</label></div>
-        </div>
+      <div class="settings-child">Icon priority (drag to reorder):</div>
+      <div class="settings-child" id="icon_priority_list">
+        <div><label value="rise_sunbreak">Rise/Sunbreak</label></div>
+        <div><label value="world_iceborne">World/Iceborne</label></div>
+        <div><label value="official_render">Official render</label></div>
+      </div>
     </div>
-</div>
+  </div>
 
-<div id="container">
+  <div id="container">
     <div id="picking">
-        <ul id="evaluating" class="item-list">
-        </ul>
+      <ul id="evaluating" class="item-list">
+      </ul>
 
-        <p id="buttons">
-            <button id="pick">Pick</button> <button id="pass">Pass</button>
-            <button id="undo">Undo</button> <button id="redo">Redo</button>
-            <button id="reset">Reset</button>
-        </p>
+      <p id="buttons">
+        <button id="pick">Pick</button> <button id="pass">Pass</button>
+        <button id="undo">Undo</button> <button id="redo">Redo</button>
+        <button id="reset">Reset</button>
+      </p>
     </div>
 
     <div id="secondary">
-        <h2>Found favorites</h2>
+      <h2>Found favorites</h2>
 
-        <ol id="favorites" class="item-list">
-        </ol>
+      <ol id="favorites" class="item-list">
+      </ol>
     </div>
-</div>
+  </div>
 
-<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
-<script src="picker.js"></script>
-<script src="picker-ui.js"></script>
-<script src="items-data.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
-<script>
-'use strict';
+  <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="picker.js"></script>
+  <script src="picker-ui.js"></script>
+  <script src="items-data.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
+  <script>
+    'use strict';
 
-var items = items_all;
+    const items = items_all;
+    const items_obj = items.reduce((acc, curr) => {
+      acc[curr.id] = curr;
+      return acc;
+    }, {})
 
-var myPicker = new picker.Picker({
-    items: items,
-    localStorageKey: 'picker-state',
-    defaultSettings: {
-        maxBatchSize: 10,
-        games_appeared: ['world_iceborne', 'rise_sunbreak'],
-    },
-    shouldIncludeItem: function(item, settings) {
-        let is_in_games_appeared = false;
-        for(let game of settings.games_appeared){
-            if(item.games.indexOf(game) !== -1){
-                is_in_games_appeared = true;
-                break;
-            }
+    function is_in_game(id, games){
+      let item = items_obj[id];
+      let is_in_games_appeared = false;
+      for (let game of games) {
+        if (item.games.indexOf(game) !== -1) {
+          is_in_games_appeared = true;
+          break;
         }
-        return is_in_games_appeared;
+      }
+      return is_in_games_appeared;
     }
-});
 
-var pickerUI = new PickerUI(myPicker, {
-    elements: {
+    var myPicker = new picker.Picker({
+      items: items,
+      localStorageKey: 'picker-state',
+      defaultSettings: {
+        maxBatchSize: 10,
+        games_appeared: ['world_iceborne', 'rise_sunbreak', 'any'],
+        subspecies: 'all'
+      },
+      shouldIncludeItem: function (item, settings) {
+        let games = settings.games_appeared;
+        let self_in_game = is_in_game(item.id, games);
+        if(!self_in_game){
+          return false;
+        }
+        let base_mon = item.base;
+        switch (settings.subspecies) {
+          case 'all':
+            return true;
+            break;
+            
+          case 'none':
+            return !base_mon;
+            break;
+            
+          case 'soft':
+            return !base_mon || !is_in_game(base_mon, games);
+            break;
+        
+          default:
+            break;
+        }
+        return self_in_game;
+      }
+    });
+
+    var pickerUI = new PickerUI(myPicker, {
+      elements: {
         pick: "#pick",
         pass: "#pass",
         undo: "#undo",
@@ -99,75 +151,77 @@ var pickerUI = new PickerUI(myPicker, {
         evaluating: "#evaluating",
         favorites: "#favorites",
         settings: {
-            games_appeared: '.games_appeared',
+          games_appeared: '.games_appeared',
+          subspecies: '.subspecies',
         }
-    },
-    getItemImageUrl: function(item, settings) {
+      },
+      getItemImageUrl: function (item, settings) {
         let itemHandlers = {
-            rise_sunbreak: function(item){
-                if(item.games.indexOf('rise_sunbreak') !== -1){
-                    return 'image/rise_sunbreak/' + item.image;
-                }
-                return null;
-            },
-            world_iceborne: function(item){
-                if(item.games.indexOf('world_iceborne') !== -1){
-                    return 'image/world_iceborne/' + item.image;
-                }
-                return null;
-            },
-            official_render: function(item){
-                return 'image/official_render/' + item.image;
-            },
+          rise_sunbreak: function (item) {
+            if (item.games.indexOf('rise_sunbreak') !== -1) {
+              return 'image/rise_sunbreak/' + item.image;
+            }
+            return null;
+          },
+          world_iceborne: function (item) {
+            if (item.games.indexOf('world_iceborne') !== -1) {
+              return 'image/world_iceborne/' + item.image;
+            }
+            return null;
+          },
+          official_render: function (item) {
+            return 'image/official_render/' + item.image;
+          },
         };
 
-        for(let sel of icon_priority){
-            let url = itemHandlers[sel](item);
-            if(url){
-                return url;
-            }
+        for (let sel of icon_priority) {
+          let url = itemHandlers[sel](item);
+          if (url) {
+            return url;
+          }
         }
         return itemHandlers.official_render(item);
-    }
-});
+      }
+    });
 
-pickerUI.initialize();
+    pickerUI.initialize();
 
-/* Sortable icon priority list */
-var icon_priority = [];
-var icon_priority_list = document.getElementById('icon_priority_list');
-var sortable_icon_priority = new Sortable(icon_priority_list, {
-    onUpdate: function(event){
+    /* Sortable icon priority list */
+    var icon_priority = [];
+    var icon_priority_list = document.getElementById('icon_priority_list');
+    var sortable_icon_priority = new Sortable(icon_priority_list, {
+      onUpdate: function (event) {
         let labels = Array.from(event.to.getElementsByTagName('label'));
         icon_priority = labels.map(e => e.getAttribute('value'));
         pickerUI.update();
+      }
+    });
+
+    {
+      let labels = Array.from(icon_priority_list.getElementsByTagName('label'));
+      icon_priority = labels.map(e => e.getAttribute('value'));
+      pickerUI.update();
     }
-});
 
-{
-    let labels = Array.from(icon_priority_list.getElementsByTagName('label'));
-    icon_priority = labels.map(e => e.getAttribute('value'));
-    pickerUI.update();
-}
-
-/* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
-var sortable_favorite = new Sortable(pickerUI.elem.favorites.get(0), {
-    draggable: '.item',
-    animation: 100,
-    onStart: function() {
+    /* Sortable favorites - you can safely remove this, and the Sortable.min.js script, if you don't want to be able to sort your favorite list. */
+    var sortable_favorite = new Sortable(pickerUI.elem.favorites.get(0), {
+      draggable: '.item',
+      animation: 100,
+      onStart: function () {
         pickerUI.elem.favorites.addClass("sorting");
-    },
-    onEnd: function() {
+      },
+      onEnd: function () {
         pickerUI.elem.favorites.removeClass("sorting");
-    },
-    onUpdate: function() {
-        myPicker.setFavorites(pickerUI.elem.favorites.children().map(function() {
-            return pickerUI.getItem(this);
+      },
+      onUpdate: function () {
+        myPicker.setFavorites(pickerUI.elem.favorites.children().map(function () {
+          return pickerUI.getItem(this);
         }).get());
         pickerUI.update();
-    }
-});
-/* End sortable favorites */
-</script>
+      }
+    });
+    /* End sortable favorites */
+  </script>
 </body>
+
 </html>
