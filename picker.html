@@ -70,6 +70,13 @@
         <button id="undo">Undo</button> <button id="redo">Redo</button>
         <button id="reset">Reset</button>
       </p>
+
+      <p id="status">
+        <p id="message">
+          Monsters to be elimated for this round: <span id="competing_num">0</span><br>
+          Monsters to yet to be picked as favorite: <span id="remaining_num">0</span>
+        </p>
+      </p>
     </div>
 
     <div id="secondary">
@@ -181,7 +188,21 @@
           }
         }
         return itemHandlers.official_render(item);
-      }
+      },
+      onUpdate: function(){
+        let state = this.picker.state.getState();
+
+        const competing_span = document.getElementById('competing_num');
+        const competing_num = 
+          state.current.length + state.evaluating.length + state.survived.length;
+        competing_span.textContent = competing_num - 1;
+        
+        const remaining_span = document.getElementById('remaining_num');
+        const remaining_num = 
+          state.current.length + state.evaluating.length 
+          + state.survived.length + state.eliminated.length;
+        remaining_span.textContent = remaining_num;
+      },
     });
 
     pickerUI.initialize();
